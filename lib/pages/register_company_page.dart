@@ -320,7 +320,7 @@ class RegisterCompanyPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: MaterialButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/register-company');
+                    Navigator.pushNamed(context, '/');
                   },
                   color: AppColors.primaryColor,
                   minWidth: double.infinity,

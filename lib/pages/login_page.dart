@@ -19,7 +19,6 @@ class LoginScreen extends StatelessWidget {
                     width: double.infinity,
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    // color: AppColors.greyTextColor,
                     height: 50,
                     child: const Text(
                       'Iniciar sesión',
@@ -67,7 +66,9 @@ class LoginScreen extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/home');
+                      },
                       color: AppColors.primaryColor,
                       height: 50,
                       shape: RoundedRectangleBorder(
