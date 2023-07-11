@@ -36,8 +36,21 @@ class InvoiceFormPage extends StatelessWidget {
                   children: [
                     const SizedBox(height: 10),
                     _headerDetailCard(),
-                    const SizedBox(height: 10),
-                    Container(),
+                    Container(
+                      width: double.infinity,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          return Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.symmetric(vertical: 5),
+                              height: 50,
+                              color: AppColors.greyTextColor);
+                        },
+                      ),
+                    ),
                     const SizedBox(height: 10),
                   ],
                 ),
@@ -46,6 +59,7 @@ class InvoiceFormPage extends StatelessWidget {
               _sumaryCard(),
               const SizedBox(height: 30),
               _createInvoiceButton(),
+              const SizedBox(height: 30),
             ],
           ),
         ),
