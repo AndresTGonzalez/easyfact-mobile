@@ -9,7 +9,9 @@ class ProductsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/product_form');
+        },
         backgroundColor: AppColors.primaryColor,
         child: const Icon(Icons.add),
       ),

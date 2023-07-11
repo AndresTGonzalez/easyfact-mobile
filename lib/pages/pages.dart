@@ -1,3 +1,5 @@
+export 'package:easyfact_mobile/pages/invoice_form_page.dart';
+export 'package:easyfact_mobile/pages/product_form_page.dart';
 export 'package:easyfact_mobile/pages/client_form_page.dart';
 export 'package:easyfact_mobile/pages/user_page.dart';
 export 'package:easyfact_mobile/pages/configuration_page.dart';

@@ -12,6 +12,7 @@ class ClientsPage extends StatelessWidget {
         onPressed: () {
           Navigator.pushNamed(context, '/client_form');
         },
+        
         backgroundColor: AppColors.primaryColor,
         child: const Icon(Icons.add),
       ),

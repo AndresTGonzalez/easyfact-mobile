@@ -20,7 +20,9 @@ class MyApp extends StatelessWidget {
         '/register-company': (context) => const RegisterCompanyPage(),
         '/activation': (context) => const ActivationPage(),
         '/user': (context) => const UserPage(),
-        '/client_form' : (context) => const ClientFormPage(),
+        '/client_form': (context) => const ClientFormPage(),
+        '/product_form': (context) => const ProductosFormPage(),
+        '/invoice_form': (context) => const InvoiceFormPage(),
       },
     );
   }
