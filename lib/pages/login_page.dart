@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:easyfact_mobile/constants/constants.dart';
+import 'package:easyfact_mobile/providers/login_form_provider.dart';
 import 'package:easyfact_mobile/ui/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -13,124 +17,15 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             children: [
               _logo(context),
-              Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    height: 50,
-                    child: const Text(
-                      'Iniciar sesión',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontFamily: 'OpenSans',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      decoration: FormFieldsStyle().textFormField(
-                          hintText: 'usuario@app.com',
-                          labelText: 'Correo electrónico'),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        String pattern =
-                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                        RegExp regExp = RegExp(pattern);
-                        return regExp.hasMatch(value ?? '')
-                            ? null
-                            : 'Correo electrónico incorrecto';
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      decoration: FormFieldsStyle().textFormField(
-                          hintText: '***********', labelText: 'Contraseña'),
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: true,
-                      autocorrect: false,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: MaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/home');
-                      },
-                      color: AppColors.primaryColor,
-                      height: 50,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'Iniciar sesión',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: 'OpenSans',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: MaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/register');
-                      },
-                      color: AppColors.successColor,
-                      height: 50,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'Registrarse',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: 'OpenSans',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Enlace de olvidaste tu contraseña en forma de texton no boton
-                  Container(
-                    width: double.infinity,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        '¿Olvidaste tu contraseña?',
-                        style: TextStyle(
-                          color: AppColors.primaryColor,
-                          fontSize: 16,
-                          fontFamily: 'OpenSans',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 50)
-                ],
-              )
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ChangeNotifierProvider(
+                  create: (_) => LoginFormProvider(),
+                  child: _LoginForm(),
+                ),
+              ),
+              const SizedBox(height: 50),
             ],
           ),
         ),
@@ -147,6 +42,112 @@ class LoginScreen extends StatelessWidget {
       child: Image.asset(
         'assets/images/logo.png',
         width: MediaQuery.of(context).size.width * 0.75,
+      ),
+    );
+  }
+}
+
+class _LoginForm extends StatelessWidget {
+  const _LoginForm({super.key});
+
+  //TODO: Add provider
+
+  @override
+  Widget build(BuildContext context) {
+    final loginForm = Provider.of<LoginFormProvider>(context);
+    return Form(
+      //TODO: Add key
+      key: loginForm.formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        children: [
+          TextFormField(
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration: FormFieldsStyle().textFormField(
+              hintText: 'usuario@app.com',
+              labelText: 'Correo electrónico',
+            ),
+            onChanged: (value) => loginForm.email = value,
+            validator: (value) {
+              String pattern =
+                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+              RegExp regExp = RegExp(pattern);
+
+              return regExp.hasMatch(value ?? '')
+                  ? null
+                  : 'El valor ingresado no luce como un correo';
+            },
+          ),
+          const SizedBox(height: 30),
+          TextFormField(
+            autocorrect: false,
+            obscureText: true,
+            keyboardType: TextInputType.visiblePassword,
+            onChanged: (value) => loginForm.password = value,
+            decoration: FormFieldsStyle().textFormField(
+              hintText: '***********',
+              labelText: 'Contraseña',
+            ),
+            validator: (value) {
+              return (value != null && value.length >= 8)
+                  ? null
+                  : 'La contraseña debe de ser de 8 caracteres';
+            },
+          ),
+          const SizedBox(height: 50),
+          MaterialButton(
+            onPressed: loginForm.isLoading
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+
+                    if (!loginForm.isValidForm()) return;
+
+                    loginForm.isLoading = true;
+                    await Future.delayed(const Duration(seconds: 2));
+                    loginForm.isLoading = false;
+                    Navigator.pushReplacementNamed(context, '/home');
+                  },
+            minWidth: double.infinity,
+            color: AppColors.primaryColor,
+            disabledColor: Colors.grey,
+            height: 50,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              loginForm.isLoading ? 'Espere' : 'Ingresar',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          MaterialButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/register');
+            },
+            minWidth: double.infinity,
+            color: AppColors.successColor,
+            height: 50,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Text(
+              'Registrarse',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
