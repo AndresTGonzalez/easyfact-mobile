@@ -204,7 +204,9 @@ class HomePage extends StatelessWidget {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: MaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/invoice_form');
+                        },
                         color: AppColors.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),

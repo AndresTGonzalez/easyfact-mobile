@@ -20,6 +20,7 @@ class ProductsPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.all(20.0),
+            margin: const EdgeInsets.only(bottom: 25.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,6 +43,7 @@ class ProductsPage extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: 10,
                     itemBuilder: (context, index) {
+                      String producto = 'Producto ${index + 1}';
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         margin: const EdgeInsets.only(bottom: 20.0),
@@ -66,7 +68,7 @@ class ProductsPage extends StatelessWidget {
                               height: MediaQuery.of(context).size.height,
                               alignment: Alignment.center,
                               child: const FaIcon(
-                                FontAwesomeIcons.fileInvoiceDollar,
+                                FontAwesomeIcons.box,
                                 color: AppColors.successColor,
                                 size: 30,
                               ),
@@ -76,76 +78,19 @@ class ProductsPage extends StatelessWidget {
                               width: 180,
                               height: MediaQuery.of(context).size.height,
                               alignment: Alignment.centerLeft,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    '#123456',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                      fontFamily: 'OpenSans',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Factura #123456',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontFamily: 'OpenSans',
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Fecha: 12/12/2021',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontFamily: 'OpenSans',
-                                    ),
-                                  ),
-                                ],
+                              child: Text(
+                                producto,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontFamily: 'OpenSans',
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             Spacer(),
-                            Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const Text(
-                                    '\$100.00',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontFamily: 'OpenSans',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5.0),
-                                  Container(
-                                    width: 60,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      color: AppColors.successColor,
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        'Aprovado',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 9,
-                                          fontFamily: 'OpenSans',
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
+                            Text('\$$index'),
+                            const Spacer()
                           ],
                         ),
                       );
