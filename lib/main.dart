@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/client_form': (context) => const ClientFormPage(),
         '/product_form': (context) => const ProductosFormPage(),
         '/invoice_form': (context) => const InvoiceFormPage(),
+        '/invoices': (context) => const InvoicesPage(),
       },
     );
   }

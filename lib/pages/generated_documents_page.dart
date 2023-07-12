@@ -18,20 +18,44 @@ class GeneratedDocuments extends StatelessWidget {
               children: <Widget>[
                 const SizedBox(height: 20.0),
                 _pageTitle(),
-                const SizedBox(height: 20.0),
-                _invoiceSectionHeader(),
+                const SizedBox(height: 35.0),
+                _invoiceSectionHeader(context),
                 const SizedBox(height: 20.0),
                 Container(
                   width: double.infinity,
-                  height: 165,
+                  height: 150,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 10,
                     itemBuilder: (context, index) {
                       return Container(
-                        width: 225,
-                        color: AppColors.blackTextColor,
+                        width: 220,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: AppColors.successColor,
+                        ),
                         margin: const EdgeInsets.only(right: 20.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '#123456789',
+                              style: _documentNumberStyle(),
+                            ),
+                            Text(
+                              'Juan Perez',
+                              style: _clientTextStyle(),
+                            ),
+                            Text(
+                              '\$ 100.00',
+                              style: _totalValueStyle(),
+                            ),
+                            const SizedBox(height: 5),
+                            _status(textColor: AppColors.successColor),
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -47,9 +71,33 @@ class GeneratedDocuments extends StatelessWidget {
                     itemCount: 10,
                     itemBuilder: (context, index) {
                       return Container(
-                        width: 225,
-                        color: AppColors.blackTextColor,
+                        width: 220,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: AppColors.dangerColor,
+                        ),
                         margin: const EdgeInsets.only(right: 20.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '#123456789',
+                              style: _documentNumberStyle(),
+                            ),
+                            Text(
+                              'Juan Perez',
+                              style: _clientTextStyle(),
+                            ),
+                            Text(
+                              '\$ 100.00',
+                              style: _totalValueStyle(),
+                            ),
+                            const SizedBox(height: 5),
+                            _status(textColor: AppColors.dangerColor),
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -62,7 +110,63 @@ class GeneratedDocuments extends StatelessWidget {
     );
   }
 
-  Container _invoiceSectionHeader() {
+  Container _status({
+    required Color textColor,
+  }) {
+    return Container(
+      width: 100,
+      height: 25,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: AppColors.whiteBackgroundColor,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        'Aprobado',
+        style: _statusTextStyle(textColor: textColor),
+      ),
+    );
+  }
+
+  TextStyle _statusTextStyle({
+    required Color textColor,
+  }) {
+    return TextStyle(
+      color: textColor,
+      fontSize: 15,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  TextStyle _totalValueStyle() {
+    return TextStyle(
+      color: AppColors.whiteBackgroundColor,
+      fontSize: 30,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  TextStyle _clientTextStyle() {
+    return TextStyle(
+      color: AppColors.whiteBackgroundColor,
+      fontSize: 20,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.w600,
+    );
+  }
+
+  TextStyle _documentNumberStyle() {
+    return TextStyle(
+      color: AppColors.whiteBackgroundColor,
+      fontSize: 15,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.w400,
+    );
+  }
+
+  Container _invoiceSectionHeader(BuildContext context) {
     return Container(
       height: 50,
       width: double.infinity,
@@ -75,7 +179,9 @@ class GeneratedDocuments extends StatelessWidget {
           ),
           const Spacer(),
           MaterialButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/invoices');
+              },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 side: const BorderSide(

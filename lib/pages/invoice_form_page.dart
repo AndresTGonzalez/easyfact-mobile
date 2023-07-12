@@ -44,10 +44,45 @@ class InvoiceFormPage extends StatelessWidget {
                         itemCount: 3,
                         itemBuilder: (context, index) {
                           return Container(
-                              width: double.infinity,
-                              margin: const EdgeInsets.symmetric(vertical: 5),
-                              height: 50,
-                              color: AppColors.greyTextColor);
+                            width: double.infinity,
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            height: 50,
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  margin: const EdgeInsets.only(left: 10),
+                                  width: 190,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Producto',
+                                        style: _detailCardProduct(),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Cant. 5 x \$ 50',
+                                        style: _cuantityDetailStyle(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  width: 75,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '\$ 250.00',
+                                    style: _subtotalDetailStyle(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -64,6 +99,33 @@ class InvoiceFormPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  TextStyle _subtotalDetailStyle() {
+    return TextStyle(
+      color: const Color.fromARGB(255, 141, 87, 87),
+      fontSize: 16,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.w400,
+    );
+  }
+
+  TextStyle _cuantityDetailStyle() {
+    return TextStyle(
+      color: AppColors.greyTextColor,
+      fontSize: 12,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.w400,
+    );
+  }
+
+  TextStyle _detailCardProduct() {
+    return TextStyle(
+      color: AppColors.blackTextColor,
+      fontSize: 13,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.bold,
     );
   }
 
