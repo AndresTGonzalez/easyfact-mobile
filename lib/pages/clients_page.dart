@@ -1,4 +1,5 @@
 import 'package:easyfact_mobile/services/client_service.dart';
+import 'package:easyfact_mobile/utils/clients_search.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class ClientsPage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          clientService.selectedClient = Cliente(
+          var cliente = Cliente(
             idCliente: 0,
             numeroIdentificacion: '',
             nombre: '',
@@ -26,7 +27,7 @@ class ClientsPage extends StatelessWidget {
             telefono: '',
             tipoPersona: '',
           );
-          Navigator.pushNamed(context, '/client_form');
+          Navigator.pushNamed(context, '/client_form', arguments: cliente);
         },
         backgroundColor: AppColors.primaryColor,
         child: const Icon(Icons.add),
@@ -39,7 +40,7 @@ class ClientsPage extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20.0),
-                _clientsTitle(),
+                _clientsTitle(context),
                 const SizedBox(height: 20.0),
                 Container(
                   width: double.infinity,
@@ -53,9 +54,15 @@ class ClientsPage extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) =>
                         GestureDetector(
                       onTap: () {
-                        clientService.selectedClient =
-                            clientService.clients[index].copy();
-                        Navigator.pushNamed(context, '/client_form');
+                        // clientService.selectedClient =
+                        //     clientService.clients[index].copy();
+                        // Navigator.pushNamed(context, '/client_form');
+                        print(clientService.clients[index].telefono);
+                        Navigator.pushNamed(
+                          context,
+                          '/client_form',
+                          arguments: clientService.clients[index],
+                        );
                       },
                       child: ClientCard(cliente: clientService.clients[index]),
                     ),
@@ -72,24 +79,57 @@ class ClientsPage extends StatelessWidget {
   FloatingActionButton _floatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/client_form');
+        var cliente = Cliente(
+          idCliente: 0,
+          numeroIdentificacion: '',
+          nombre: '',
+          apellido: '',
+          correo: '',
+          direccion: '',
+          telefono: '',
+          tipoPersona: '',
+        );
+        Navigator.pushNamed(context, '/client_form', arguments: cliente);
       },
       backgroundColor: AppColors.primaryColor,
       child: const Icon(Icons.add),
     );
   }
 
-  Container _clientsTitle() {
-    return Container(
-      alignment: Alignment.centerLeft,
-      child: const Text(
-        'Clientes',
-        style: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'OpenSans',
+  Row _clientsTitle(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            'Clientes',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
+            ),
+          ),
         ),
-      ),
+        const Spacer(),
+        Container(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            onPressed: () {
+              // Navigator.pushNamed(context, '/client_search');
+              showSearch(
+                context: context,
+                delegate: SearchClientDelegate(
+                    Provider.of<ClientService>(context, listen: false).clients),
+              );
+            },
+            icon: const Icon(
+              FontAwesomeIcons.magnifyingGlass,
+              size: 20,
+              color: AppColors.primaryColor,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../models/cliente.dart';
-import '../providers/navigation_provider.dart';
 import '../services/client_service.dart';
 import '../ui/ui.dart';
 import '../utils/cedula_validator.dart';
@@ -16,6 +15,10 @@ class ClientFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final clientService = Provider.of<ClientService>(context);
+
+    final Cliente client =
+        ModalRoute.of(context)?.settings.arguments as Cliente;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -53,14 +56,16 @@ class ClientFormPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ChangeNotifierProvider(
                   create: (_) => ClientFormProvider(),
-                  child: _ClientForm(),
+                  child: _ClientForm(client: client),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: MaterialButton(
                   onPressed: () {
+                    var id = client.numeroIdentificacion;
+                    clientService.deleteClient(idCliente: id.toString());
                     Navigator.pop(context);
                   },
                   color: AppColors.dangerColor,
@@ -70,7 +75,7 @@ class ClientFormPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Text(
-                    'Cancelar',
+                    'Eliminar cliente',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -90,13 +95,16 @@ class ClientFormPage extends StatelessWidget {
 }
 
 class _ClientForm extends StatelessWidget {
-  const _ClientForm({super.key});
+  final Cliente client;
+  const _ClientForm({
+    super.key,
+    required this.client,
+  });
 
   @override
   Widget build(BuildContext context) {
     final clientForm = Provider.of<ClientFormProvider>(context);
     final clientService = Provider.of<ClientService>(context);
-    final naviationProvider = Provider.of<NavigationProvider>(context);
     return Form(
       key: clientForm.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -108,7 +116,8 @@ class _ClientForm extends StatelessWidget {
               labelText: 'Cédula o RUC',
             ),
             onChanged: (value) => clientForm.cedula = value,
-            initialValue: clientService.selectedClient.numeroIdentificacion,
+            // initialValue: clientService.selectedClient.numeroIdentificacion,
+            initialValue: client.numeroIdentificacion,
             keyboardType: TextInputType.number,
             validator: (value) => CedulaValidator.validate(value.toString()),
           ),
@@ -119,7 +128,8 @@ class _ClientForm extends StatelessWidget {
               labelText: 'Nombre',
             ),
             keyboardType: TextInputType.text,
-            initialValue: clientService.selectedClient.nombre,
+            // initialValue: clientService.selectedClient.nombre,
+            initialValue: client.nombre,
             onChanged: (value) => clientForm.nombre = value,
             validator: (value) {
               if (value!.isEmpty) {
@@ -136,7 +146,8 @@ class _ClientForm extends StatelessWidget {
               hintText: 'usuario@app.com',
               labelText: 'Correo electrónico',
             ),
-            initialValue: clientService.selectedClient.correo,
+            // initialValue: clientService.selectedClient.correo,
+            initialValue: client.correo,
             onChanged: (value) => clientForm.correo = value,
             validator: (value) {
               String pattern =
@@ -155,7 +166,8 @@ class _ClientForm extends StatelessWidget {
               labelText: 'Dirección',
             ),
             onChanged: (value) => clientForm.direccion = value,
-            initialValue: clientService.selectedClient.direccion,
+            // initialValue: clientService.selectedClient.direccion,
+            initialValue: client.direccion,
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value!.isEmpty) {
@@ -170,7 +182,8 @@ class _ClientForm extends StatelessWidget {
               hintText: '0999988888',
               labelText: 'Teléfono',
             ),
-            initialValue: clientService.selectedClient.telefono,
+            // initialValue: clientService.selectedClient.telefono,
+            initialValue: client.telefono,
             keyboardType: TextInputType.phone,
             onChanged: (value) => clientForm.telefono = value,
             validator: (value) {
@@ -192,25 +205,37 @@ class _ClientForm extends StatelessWidget {
                     clientForm.isLoading = true;
                     await Future.delayed(const Duration(seconds: 2));
                     clientForm.isLoading = false;
-                    var id = clientService.selectedClient.idCliente;
-                    // if (id == 0) {
-                    //   Cliente cliente = Cliente(
-                    //     idCliente: 0,
-                    //     numeroIdentificacion: clientForm.cedula,
-                    //     nombre: clientForm.nombre,
-                    //     apellido: '',
-                    //     correo: clientForm.correo,
-                    //     direccion: clientForm.direccion,
-                    //     telefono: clientForm.telefono,
-                    //     tipoPersona: 'Natural',
-                    //   );
-                    //   clientService.clients.add(cliente);
-                    //   // Logica para guardar el cliente o llamado al servicio
-                    //   clientService.crearCliente(cliente);
-                    // } else {}
-                    // naviationProvider.currentIndex = 1;
-                    naviationProvider.initialPage();
-                    Navigator.pushReplacementNamed(context, '/home');
+                    // var id = clientService.selectedClient.idCliente;
+                    var id = client.idCliente;
+                    if (id == 0) {
+                      Cliente cliente = Cliente(
+                        idCliente: 0,
+                        numeroIdentificacion: clientForm.cedula,
+                        nombre: clientForm.nombre,
+                        apellido: '',
+                        correo: clientForm.correo,
+                        direccion: clientForm.direccion,
+                        telefono: clientForm.telefono,
+                        tipoPersona: 'Natural',
+                      );
+                      clientService.clients.add(cliente);
+                      // Logica para guardar el cliente o llamado al servicio
+                      clientService.crearCliente(cliente);
+                    } else {
+                      // Logica para editar el cliente o llamado al servicio
+                      clientService.updateClient(client);
+                      // Actualizar los datos en el listado
+                      clientService.clients.map((e) {
+                        if (e.idCliente == id) {
+                          e.numeroIdentificacion = clientForm.cedula;
+                          e.nombre = clientForm.nombre;
+                          e.correo = clientForm.correo;
+                          e.direccion = clientForm.direccion;
+                          e.telefono = clientForm.telefono;
+                        }
+                      }).toList();
+                    }
+                    Navigator.pop(context);
                   },
             color: AppColors.primaryColor,
             minWidth: double.infinity,

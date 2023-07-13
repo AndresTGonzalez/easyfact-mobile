@@ -11,8 +11,6 @@ class ProductosFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -22,7 +20,7 @@ class ProductosFormPage extends StatelessWidget {
                 height: 75,
                 width: double.infinity,
                 margin: const EdgeInsets.only(top: 20),
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
                     IconButton(
@@ -55,7 +53,6 @@ class ProductosFormPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: MaterialButton(
                   onPressed: () {
                     Navigator.pop(context);

@@ -6,12 +6,45 @@ import 'package:http/http.dart' as http;
 class ClientService extends ChangeNotifier {
   static const String _baseUrl = '34.75.222.189:8000';
   final List<Cliente> clients = [];
-  late Cliente selectedClient;
   bool isLoading = true;
 
   ClientService() {
     // _getClients();
     loadClients();
+  }
+
+  int indexOfClient(String? cedula) {
+    return clients
+        .indexWhere((cliente) => cliente.numeroIdentificacion == cedula);
+  }
+
+  Future<void> updateClient(Cliente cliente) async {
+    final url =
+        Uri.http(_baseUrl, '/api/cliente/1851003564001/${cliente.idCliente}/');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode(cliente.toJson());
+
+    final response = await http.put(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      notifyListeners();
+      print('Se logro');
+    } else {
+      throw Exception('Error en la solicitud PUT');
+    }
+  }
+
+  Future<bool> deleteClient({required String idCliente}) async {
+    final url = Uri.http(_baseUrl, '/api/cliente/1851003564001/$idCliente/');
+    final response = await http.delete(url);
+    if (response.statusCode == 200) {
+      clients.removeAt(indexOfClient(idCliente.toString()));
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<void> crearCliente(Cliente cliente) async {
@@ -23,6 +56,7 @@ class ClientService extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
+      notifyListeners();
       print('Se logro');
     } else {
       throw Exception('Error en la solicitud POST');
