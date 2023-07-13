@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NavigationProvider with ChangeNotifier {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
 
@@ -12,6 +12,12 @@ class NavigationProvider with ChangeNotifier {
       duration: const Duration(microseconds: 250),
       curve: Curves.easeOut,
     );
+    notifyListeners();
+  }
+
+  // Establecer la pagina 1 como la pagina inicial
+  void initialPage() {
+    _currentIndex = 1;
     notifyListeners();
   }
 

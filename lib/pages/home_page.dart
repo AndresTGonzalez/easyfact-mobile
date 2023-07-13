@@ -1,6 +1,8 @@
 import 'package:easyfact_mobile/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
+import '../global/user_info.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -16,9 +18,9 @@ class HomePage extends StatelessWidget {
                 children: [
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Text(
-                      'Bienvenido, usuario',
-                      style: TextStyle(
+                    child: Text(
+                      'Bienvenido, ${UserInfo.nombre}',
+                      style: const TextStyle(
                         color: AppColors.primaryColor,
                         fontSize: 20,
                         fontFamily: 'OpenSans',

@@ -2,6 +2,7 @@
 
 import 'package:easyfact_mobile/constants/constants.dart';
 import 'package:easyfact_mobile/providers/login_form_provider.dart';
+import 'package:easyfact_mobile/services/auth_service.dart';
 import 'package:easyfact_mobile/ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -103,11 +104,16 @@ class _LoginForm extends StatelessWidget {
                     FocusScope.of(context).unfocus();
 
                     if (!loginForm.isValidForm()) return;
-
-                    loginForm.isLoading = true;
-                    await Future.delayed(const Duration(seconds: 2));
-                    loginForm.isLoading = false;
-                    Navigator.pushReplacementNamed(context, '/home');
+                    var loginOK =
+                        AuthService.login(loginForm.email, loginForm.password);
+                    if (await loginOK) {
+                      loginForm.isLoading = true;
+                      await Future.delayed(const Duration(seconds: 2));
+                      loginForm.isLoading = false;
+                      Navigator.pushNamed(context, '/home');
+                    } else {
+                      // Mensaje en caso de que el login falle
+                    }
                   },
             minWidth: double.infinity,
             color: AppColors.primaryColor,

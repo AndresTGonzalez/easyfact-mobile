@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
+import '../models/cliente.dart';
+import '../providers/navigation_provider.dart';
+import '../services/client_service.dart';
 import '../ui/ui.dart';
 import '../utils/cedula_validator.dart';
 
@@ -92,6 +95,8 @@ class _ClientForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clientForm = Provider.of<ClientFormProvider>(context);
+    final clientService = Provider.of<ClientService>(context);
+    final naviationProvider = Provider.of<NavigationProvider>(context);
     return Form(
       key: clientForm.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -103,6 +108,7 @@ class _ClientForm extends StatelessWidget {
               labelText: 'Cédula o RUC',
             ),
             onChanged: (value) => clientForm.cedula = value,
+            initialValue: clientService.selectedClient.numeroIdentificacion,
             keyboardType: TextInputType.number,
             validator: (value) => CedulaValidator.validate(value.toString()),
           ),
@@ -113,6 +119,7 @@ class _ClientForm extends StatelessWidget {
               labelText: 'Nombre',
             ),
             keyboardType: TextInputType.text,
+            initialValue: clientService.selectedClient.nombre,
             onChanged: (value) => clientForm.nombre = value,
             validator: (value) {
               if (value!.isEmpty) {
@@ -129,6 +136,7 @@ class _ClientForm extends StatelessWidget {
               hintText: 'usuario@app.com',
               labelText: 'Correo electrónico',
             ),
+            initialValue: clientService.selectedClient.correo,
             onChanged: (value) => clientForm.correo = value,
             validator: (value) {
               String pattern =
@@ -146,6 +154,8 @@ class _ClientForm extends StatelessWidget {
               hintText: 'Ambato. Av. Bolivariana',
               labelText: 'Dirección',
             ),
+            onChanged: (value) => clientForm.direccion = value,
+            initialValue: clientService.selectedClient.direccion,
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value!.isEmpty) {
@@ -160,7 +170,9 @@ class _ClientForm extends StatelessWidget {
               hintText: '0999988888',
               labelText: 'Teléfono',
             ),
+            initialValue: clientService.selectedClient.telefono,
             keyboardType: TextInputType.phone,
+            onChanged: (value) => clientForm.telefono = value,
             validator: (value) {
               if (value!.isEmpty) {
                 return 'Por favor ingrese el teléfono del cliente';
@@ -175,11 +187,29 @@ class _ClientForm extends StatelessWidget {
                 : () async {
                     FocusScope.of(context).unfocus();
 
-                    if (!clientForm.isValidForm()) return;
+                    // if (!clientForm.isValidForm()) return;
 
                     clientForm.isLoading = true;
                     await Future.delayed(const Duration(seconds: 2));
                     clientForm.isLoading = false;
+                    var id = clientService.selectedClient.idCliente;
+                    // if (id == 0) {
+                    //   Cliente cliente = Cliente(
+                    //     idCliente: 0,
+                    //     numeroIdentificacion: clientForm.cedula,
+                    //     nombre: clientForm.nombre,
+                    //     apellido: '',
+                    //     correo: clientForm.correo,
+                    //     direccion: clientForm.direccion,
+                    //     telefono: clientForm.telefono,
+                    //     tipoPersona: 'Natural',
+                    //   );
+                    //   clientService.clients.add(cliente);
+                    //   // Logica para guardar el cliente o llamado al servicio
+                    //   clientService.crearCliente(cliente);
+                    // } else {}
+                    // naviationProvider.currentIndex = 1;
+                    naviationProvider.initialPage();
                     Navigator.pushReplacementNamed(context, '/home');
                   },
             color: AppColors.primaryColor,

@@ -1,3 +1,5 @@
+import 'package:easyfact_mobile/global/user_info.dart';
+import 'package:easyfact_mobile/pages/login_page.dart';
 import 'package:easyfact_mobile/ui/form_fields_style.dart';
 import 'package:flutter/material.dart';
 
@@ -93,7 +95,14 @@ class UserPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    UserInfo.reset();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (route) => false);
+                  },
                   color: AppColors.dangerColor,
                   minWidth: double.infinity,
                   height: 50,

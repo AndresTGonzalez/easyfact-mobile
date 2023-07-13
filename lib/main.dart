@@ -1,8 +1,24 @@
+import 'package:easyfact_mobile/providers/navigation_provider.dart';
+import 'package:easyfact_mobile/services/client_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'pages/pages.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(AppState());
+
+class AppState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ClientService()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider())
+      ],
+      child: const MyApp(),
+    );
+  }
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
