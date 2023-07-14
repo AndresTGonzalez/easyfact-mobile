@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
+import '../services/invoice_detail_service.dart';
 import '../utils/products_search.dart';
 
 class ProductsPage extends StatelessWidget {
@@ -50,27 +51,31 @@ class ProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsService = Provider.of<ProductsService>(context);
+    final invoiceDetailService = Provider.of<InvoiceDetailService>(context);
+    final int option = ModalRoute.of(context)?.settings.arguments as int? ?? 0;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Producto producto = Producto(
-            idIvaPer: 0,
-            idProducto: 0,
-            producto: '',
-            precio: 0,
-          );
-          Navigator.pushNamed(
-            context,
-            '/product_form',
-            arguments: {
-              'option': 0,
-              'producto': producto,
-            },
-          );
-        },
-        backgroundColor: AppColors.primaryColor,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: option == 1
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                Producto producto = Producto(
+                  idIvaPer: 0,
+                  idProducto: 0,
+                  producto: '',
+                  precio: 0,
+                );
+                Navigator.pushNamed(
+                  context,
+                  '/product_form',
+                  arguments: {
+                    'option': 0,
+                    'producto': producto,
+                  },
+                );
+              },
+              backgroundColor: AppColors.primaryColor,
+              child: const Icon(Icons.add),
+            ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -91,14 +96,21 @@ class ProductsPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/product_form',
-                            arguments: {
-                              'option': 1,
-                              'producto': productsService.products[index],
-                            },
-                          );
+                          if (option == 2) {
+                            invoiceDetailService.setSelectedProduct(
+                              productsService.products[index],
+                            );
+                            Navigator.pop(context);
+                          } else {
+                            Navigator.pushNamed(
+                              context,
+                              '/product_form',
+                              arguments: {
+                                'option': 1,
+                                'producto': productsService.products[index],
+                              },
+                            );
+                          }
                         },
                         child: _ProductCard(
                             producto: productsService.products[index]),

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../models/create_factura.dart';
+import '../services/invoice_detail_service.dart';
 import '../services/invoice_service.dart';
 
 class InvoiceFormPage extends StatelessWidget {
@@ -11,23 +13,155 @@ class InvoiceFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final Map<String, dynamic>? arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final CreateFactura factura = arguments?['factura'] as CreateFactura;
+    return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                _Header(),
-                SizedBox(height: 20.0),
-                _DateDetail(),
-                SizedBox(height: 20.0),
-                _ClientDetail(),
-                SizedBox(height: 20.0),
-                _InvoiceDetail(),
+                const _Header(),
+                const SizedBox(height: 20.0),
+                _DateDetail(factura: factura),
+                const SizedBox(height: 20.0),
+                const _ClientDetail(),
+                const SizedBox(height: 20.0),
+                const _InvoiceDetail(),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AddDetailForm extends StatelessWidget {
+  const _AddDetailForm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final invoiceDetailService = Provider.of<InvoiceDetailService>(context);
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      content: Container(
+        height: MediaQuery.of(context).size.height * 0.55,
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Agregar detalle',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/products', arguments: 2);
+              },
+              child: invoiceDetailService.selectedProduct.producto == ''
+                  ? const Text(
+                      'Seleccionar producto',
+                      style: TextStyle(
+                        color: AppColors.primaryColor,
+                        fontFamily: 'OpenSans',
+                      ),
+                    )
+                  : TextFormField(
+                      enabled: false,
+                      initialValue:
+                          invoiceDetailService.selectedProduct.producto,
+                      decoration: InputDecoration(
+                        labelText: 'Producto',
+                        labelStyle: const TextStyle(
+                          color: AppColors.primaryColor,
+                          fontFamily: 'OpenSans',
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 20.0),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              onChanged: (value) => invoiceDetailService.cantidad = int.parse(
+                value == '' ? '0' : value,
+              ),
+              decoration: InputDecoration(
+                labelText: 'Cantidad',
+                labelStyle: const TextStyle(
+                  color: AppColors.primaryColor,
+                  fontFamily: 'OpenSans',
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            Row(
+              children: [
+                Text(
+                  'Precio',
+                  style: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontFamily: 'OpenSans',
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  // 'data',
+                  '\$${invoiceDetailService.selectedProduct.precio}',
+                ),
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                Text('Subtotal'),
+                const Spacer(),
+                Text(
+                  // 'data',
+                  '\$${invoiceDetailService.selectedProduct.precio * invoiceDetailService.cantidad}',
+                ),
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            MaterialButton(
+              minWidth: 400,
+              onPressed: () {},
+              child: const Text('Agregar'),
+              color: AppColors.primaryColor,
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            const SizedBox(height: 5.0),
+            MaterialButton(
+              minWidth: 400,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancelar'),
+              color: AppColors.dangerColor,
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -51,10 +185,19 @@ class _InvoiceDetail extends StatelessWidget {
                 style: CardDecorations.titleCardTextStyle(),
               ),
               const Spacer(),
-              const FaIcon(
-                FontAwesomeIcons.circlePlus,
-                color: AppColors.successColor,
-                size: 20.0,
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const _AddDetailForm();
+                      });
+                },
+                icon: const FaIcon(
+                  FontAwesomeIcons.circlePlus,
+                  color: AppColors.successColor,
+                  size: 20.0,
+                ),
               ),
             ],
           ),
@@ -153,7 +296,11 @@ class _ClientDetail extends StatelessWidget {
 }
 
 class _DateDetail extends StatelessWidget {
-  const _DateDetail({super.key});
+  final CreateFactura factura;
+  const _DateDetail({
+    super.key,
+    required this.factura,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -167,11 +314,14 @@ class _DateDetail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '#123456789',
+                // '#123456789',
+                factura.numeroFactura.toString(),
                 style: CardDecorations.titleCardTextStyle(),
               ),
+              const SizedBox(height: 2),
               Text(
-                '05/05/2023',
+                // '05/05/2023',
+                factura.fecha.toString(),
                 style: CardDecorations.subtitleCardTextStyle(),
               ),
             ],
@@ -204,7 +354,7 @@ class _Header extends StatelessWidget {
           const Text(
             'Nueva factura',
             style: TextStyle(
-              fontSize: 25.0,
+              fontSize: 20.0,
               fontFamily: 'OpenSans',
               fontWeight: FontWeight.bold,
             ),

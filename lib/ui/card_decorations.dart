@@ -19,7 +19,7 @@ class CardDecorations {
 
   static TextStyle titleCardTextStyle() {
     return const TextStyle(
-      fontSize: 18,
+      fontSize: 15,
       fontFamily: 'OpenSans',
       fontWeight: FontWeight.bold,
       color: AppColors.blackTextColor,
@@ -28,7 +28,7 @@ class CardDecorations {
 
   static TextStyle subtitleCardTextStyle() {
     return const TextStyle(
-      fontSize: 15,
+      fontSize: 13,
       fontFamily: 'OpenSans',
       fontWeight: FontWeight.w500,
       color: AppColors.greyTextColor,
@@ -37,7 +37,7 @@ class CardDecorations {
 
   static TextStyle detailProductTextStyle() {
     return const TextStyle(
-      fontSize: 16,
+      fontSize: 13,
       fontFamily: 'OpenSans',
       fontWeight: FontWeight.bold,
       color: AppColors.blackTextColor,

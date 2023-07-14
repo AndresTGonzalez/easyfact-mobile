@@ -67,7 +67,6 @@ class ClientService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final clientesData = jsonData['clientes'] as List<dynamic>;
-
       final clientes = clientesData.map((clienteData) {
         return Cliente(
           idCliente: clienteData['id_cliente'],

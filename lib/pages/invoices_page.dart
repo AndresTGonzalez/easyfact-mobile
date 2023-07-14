@@ -1,16 +1,25 @@
 import 'package:easyfact_mobile/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../services/invoice_service.dart';
 
 class InvoicesPage extends StatelessWidget {
   const InvoicesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final invoiceService = Provider.of<InvoiceService>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/invoice_form');
+        onPressed: () async {
+          var factura = await invoiceService.createFactura();
+          Navigator.pushNamed(
+            context,
+            '/invoice_form',
+            arguments: {'factura': factura},
+          );
         },
         backgroundColor: AppColors.primaryColor,
         child: const Icon(Icons.add),
@@ -20,14 +29,13 @@ class InvoicesPage extends StatelessWidget {
           child: Column(
             children: [
               _header(context),
-              // const SizedBox(height: 20.0),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 10,
+                  itemCount: invoiceService.facturas.length,
                   itemBuilder: (context, index) {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -63,13 +71,15 @@ class InvoicesPage extends StatelessWidget {
                             width: 180,
                             height: MediaQuery.of(context).size.height,
                             alignment: Alignment.centerLeft,
-                            child: const Column(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '#123456',
-                                  style: TextStyle(
+                                  // '#123456',
+                                  invoiceService.facturas[index].numeroFactura
+                                      .toString(),
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
                                     fontFamily: 'OpenSans',
@@ -77,16 +87,19 @@ class InvoicesPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  'Factura #123456',
-                                  style: TextStyle(
+                                  invoiceService.facturas[index].idClientePer
+                                      .toString(),
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 13,
                                     fontFamily: 'OpenSans',
                                   ),
                                 ),
                                 Text(
-                                  'Fecha: 12/12/2021',
-                                  style: TextStyle(
+                                  // 'Fecha: 12/12/2021',
+                                  invoiceService.facturas[index].fecha
+                                      .toString(),
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 13,
                                     fontFamily: 'OpenSans',
@@ -100,35 +113,16 @@ class InvoicesPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              const Text(
-                                '\$100.00',
-                                style: TextStyle(
+                              Text(
+                                // '\$100.00',
+                                '\$${invoiceService.facturas[index].total}',
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 18,
                                   fontFamily: 'OpenSans',
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 5.0),
-                              Container(
-                                width: 60,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: AppColors.successColor,
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'Aprovado',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 9,
-                                      fontFamily: 'OpenSans',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              )
                             ],
                           )
                         ],
