@@ -33,7 +33,7 @@ class _Pages extends StatelessWidget {
         HomePage(),
         ClientsPage(),
         ProductsPage(),
-        GeneratedDocuments(),
+        InvoicesPage(),
         ConfigurationPage()
       ],
     );

@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:easyfact_mobile/models/producto.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../providers/product_form_provider.dart';
-import '../services/client_service.dart';
+import '../services/products_service.dart';
 import '../ui/ui.dart';
 
 class ProductosFormPage extends StatelessWidget {
@@ -11,6 +14,10 @@ class ProductosFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final int option = arguments?['option'] as int? ?? 0;
+    final Producto? producto = arguments?['producto'] as Producto?;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -48,7 +55,10 @@ class ProductosFormPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ChangeNotifierProvider(
                   create: (_) => ProductFormProvider(),
-                  child: _ProductForm(),
+                  child: _ProductForm(
+                    producto: producto,
+                    option: option,
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
@@ -84,11 +94,18 @@ class ProductosFormPage extends StatelessWidget {
 }
 
 class _ProductForm extends StatelessWidget {
-  const _ProductForm({super.key});
+  final Producto? producto;
+  final int option;
+  const _ProductForm({
+    super.key,
+    required this.producto,
+    required this.option,
+  });
 
   @override
   Widget build(BuildContext context) {
     final productForm = Provider.of<ProductFormProvider>(context);
+    final productService = Provider.of<ProductsService>(context);
     return Form(
       key: productForm.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -99,6 +116,7 @@ class _ProductForm extends StatelessWidget {
               hintText: '1 Libra de carne de res',
               labelText: 'Producto',
             ),
+            initialValue: producto?.producto,
             keyboardType: TextInputType.text,
             onChanged: (value) => productForm.producto = value,
             validator: (value) {
@@ -114,6 +132,7 @@ class _ProductForm extends StatelessWidget {
               hintText: '2.50',
               labelText: 'Precio',
             ),
+            initialValue: producto?.precio.toString(),
             keyboardType: TextInputType.number,
             onChanged: (value) => productForm.precio = value,
             validator: (value) {
@@ -130,7 +149,7 @@ class _ProductForm extends StatelessWidget {
                 labelText: 'Categoría de IVA'),
             items: const [
               DropdownMenuItem(
-                value: '1',
+                value: 'cero',
                 child: Text('IVA 0%'),
               ),
               DropdownMenuItem(
@@ -138,7 +157,9 @@ class _ProductForm extends StatelessWidget {
                 child: Text('IVA 12%'),
               ),
             ],
-            onChanged: (value) {},
+            onChanged: (value) {
+              productForm.categoria = value.toString();
+            },
             validator: (value) {
               if (value == null) {
                 return 'Por favor seleccione una opción';
@@ -158,7 +179,17 @@ class _ProductForm extends StatelessWidget {
                     productForm.isLoading = true;
                     await Future.delayed(const Duration(seconds: 2));
                     productForm.isLoading = false;
-                    // TODO: Logica de servidor para guardar el producto
+                    if (option == 0) {
+                      Producto nuevo = Producto(
+                        idIvaPer: productForm.categoria == 'cero' ? 0 : 1,
+                        producto: productForm.producto,
+                        precio: double.parse(productForm.precio),
+                        idProducto: 0,
+                      );
+                      productService.products.add(nuevo);
+                      await productService.createProduct(nuevo);
+                    }
+                    Navigator.pop(context);
                   },
             color: AppColors.primaryColor,
             minWidth: double.infinity,

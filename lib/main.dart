@@ -1,5 +1,7 @@
 import 'package:easyfact_mobile/providers/navigation_provider.dart';
 import 'package:easyfact_mobile/services/client_service.dart';
+import 'package:easyfact_mobile/services/invoice_service.dart';
+import 'package:easyfact_mobile/services/products_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +15,9 @@ class AppState extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ClientService()),
-        ChangeNotifierProvider(create: (_) => NavigationProvider())
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => InvoiceService()),
+        ChangeNotifierProvider(create: (_) => ProductsService()),
       ],
       child: const MyApp(),
     );
@@ -40,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/product_form': (context) => const ProductosFormPage(),
         '/invoice_form': (context) => const InvoiceFormPage(),
         '/invoices': (context) => const InvoicesPage(),
+        '/clients': (context) => const ClientsPage(),
       },
     );
   }

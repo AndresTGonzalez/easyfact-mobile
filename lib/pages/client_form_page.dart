@@ -16,9 +16,10 @@ class ClientFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clientService = Provider.of<ClientService>(context);
-
-    final Cliente client =
-        ModalRoute.of(context)?.settings.arguments as Cliente;
+    final Map<String, dynamic>? arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final int option = arguments?['option'] as int? ?? 0;
+    final Cliente client = arguments?['client'] as Cliente;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -56,7 +57,7 @@ class ClientFormPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ChangeNotifierProvider(
                   create: (_) => ClientFormProvider(),
-                  child: _ClientForm(client: client),
+                  child: _ClientForm(client: client, option: option),
                 ),
               ),
               const SizedBox(height: 20),
@@ -96,9 +97,11 @@ class ClientFormPage extends StatelessWidget {
 
 class _ClientForm extends StatelessWidget {
   final Cliente client;
+  final int option;
   const _ClientForm({
     super.key,
     required this.client,
+    required this.option,
   });
 
   @override
@@ -167,7 +170,10 @@ class _ClientForm extends StatelessWidget {
             ),
             onChanged: (value) => clientForm.direccion = value,
             // initialValue: clientService.selectedClient.direccion,
-            initialValue: client.direccion,
+            // initialValue: client.direccion,
+            controller: TextEditingController(
+              text: client.direccion,
+            ),
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value!.isEmpty) {
@@ -182,8 +188,10 @@ class _ClientForm extends StatelessWidget {
               hintText: '0999988888',
               labelText: 'Teléfono',
             ),
+
             // initialValue: clientService.selectedClient.telefono,
-            initialValue: client.telefono,
+            // initialValue: client.telefono,
+            controller: TextEditingController(text: client.telefono),
             keyboardType: TextInputType.phone,
             onChanged: (value) => clientForm.telefono = value,
             validator: (value) {
@@ -205,9 +213,8 @@ class _ClientForm extends StatelessWidget {
                     clientForm.isLoading = true;
                     await Future.delayed(const Duration(seconds: 2));
                     clientForm.isLoading = false;
-                    // var id = clientService.selectedClient.idCliente;
                     var id = client.idCliente;
-                    if (id == 0) {
+                    if (option == 0) {
                       Cliente cliente = Cliente(
                         idCliente: 0,
                         numeroIdentificacion: clientForm.cedula,
@@ -219,19 +226,41 @@ class _ClientForm extends StatelessWidget {
                         tipoPersona: 'Natural',
                       );
                       clientService.clients.add(cliente);
-                      // Logica para guardar el cliente o llamado al servicio
                       clientService.crearCliente(cliente);
                     } else {
-                      // Logica para editar el cliente o llamado al servicio
-                      clientService.updateClient(client);
-                      // Actualizar los datos en el listado
+                      var nombre = clientForm.nombre == ''
+                          ? client.nombre
+                          : clientForm.nombre;
+                      var cedula = clientForm.cedula == ''
+                          ? client.numeroIdentificacion
+                          : clientForm.cedula;
+                      var correo = clientForm.correo == ''
+                          ? client.correo
+                          : clientForm.correo;
+                      var direccion = clientForm.direccion == ''
+                          ? client.direccion
+                          : clientForm.direccion;
+                      var telefono = clientForm.telefono == ''
+                          ? client.telefono
+                          : clientForm.telefono;
+                      Cliente editar = Cliente(
+                        idCliente: id,
+                        numeroIdentificacion: cedula,
+                        nombre: nombre,
+                        apellido: '',
+                        correo: correo,
+                        direccion: direccion,
+                        telefono: telefono,
+                        tipoPersona: 'Natural',
+                      );
+                      clientService.updateClient(editar);
                       clientService.clients.map((e) {
                         if (e.idCliente == id) {
-                          e.numeroIdentificacion = clientForm.cedula;
-                          e.nombre = clientForm.nombre;
-                          e.correo = clientForm.correo;
-                          e.direccion = clientForm.direccion;
-                          e.telefono = clientForm.telefono;
+                          e.numeroIdentificacion = cedula;
+                          e.nombre = nombre;
+                          e.correo = correo;
+                          e.direccion = direccion;
+                          e.telefono = telefono;
                         }
                       }).toList();
                     }

@@ -1,4 +1,5 @@
 import 'package:easyfact_mobile/services/client_service.dart';
+import 'package:easyfact_mobile/services/invoice_service.dart';
 import 'package:easyfact_mobile/utils/clients_search.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,25 +14,12 @@ class ClientsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clientService = Provider.of<ClientService>(context);
+    final invoiceService = Provider.of<InvoiceService>(context);
+    final int option = ModalRoute.of(context)?.settings.arguments as int? ?? 0;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          var cliente = Cliente(
-            idCliente: 0,
-            numeroIdentificacion: '',
-            nombre: '',
-            apellido: '',
-            correo: '',
-            direccion: '',
-            telefono: '',
-            tipoPersona: '',
-          );
-          Navigator.pushNamed(context, '/client_form', arguments: cliente);
-        },
-        backgroundColor: AppColors.primaryColor,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton:
+          option == 0 ? _floatingActionButton(context) : Container(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -54,15 +42,21 @@ class ClientsPage extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) =>
                         GestureDetector(
                       onTap: () {
-                        // clientService.selectedClient =
-                        //     clientService.clients[index].copy();
-                        // Navigator.pushNamed(context, '/client_form');
-                        print(clientService.clients[index].telefono);
-                        Navigator.pushNamed(
-                          context,
-                          '/client_form',
-                          arguments: clientService.clients[index],
-                        );
+                        if (option == 0) {
+                          Navigator.pushNamed(
+                            context,
+                            '/client_form',
+                            arguments: {
+                              'option': 1,
+                              'client': clientService.clients[index]
+                            },
+                          );
+                        } else {
+                          invoiceService
+                              .setCliente(clientService.clients[index].copy());
+                          print(invoiceService.cliente.numeroIdentificacion);
+                          Navigator.pop(context);
+                        }
                       },
                       child: ClientCard(cliente: clientService.clients[index]),
                     ),
@@ -89,7 +83,11 @@ class ClientsPage extends StatelessWidget {
           telefono: '',
           tipoPersona: '',
         );
-        Navigator.pushNamed(context, '/client_form', arguments: cliente);
+        Navigator.pushNamed(
+          context,
+          '/client_form',
+          arguments: {'option': 0, 'client': cliente},
+        );
       },
       backgroundColor: AppColors.primaryColor,
       child: const Icon(Icons.add),

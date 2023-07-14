@@ -19,8 +19,7 @@ class ClientService extends ChangeNotifier {
   }
 
   Future<void> updateClient(Cliente cliente) async {
-    final url =
-        Uri.http(_baseUrl, '/api/cliente/1851003564001/${cliente.idCliente}/');
+    final url = Uri.http(_baseUrl, '/api/cliente/1/${cliente.idCliente}/');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(cliente.toJson());
 
@@ -36,7 +35,7 @@ class ClientService extends ChangeNotifier {
   }
 
   Future<bool> deleteClient({required String idCliente}) async {
-    final url = Uri.http(_baseUrl, '/api/cliente/1851003564001/$idCliente/');
+    final url = Uri.http(_baseUrl, '/api/cliente/1/$idCliente/');
     final response = await http.delete(url);
     if (response.statusCode == 200) {
       clients.removeAt(indexOfClient(idCliente.toString()));
@@ -48,7 +47,7 @@ class ClientService extends ChangeNotifier {
   }
 
   Future<void> crearCliente(Cliente cliente) async {
-    final url = Uri.http(_baseUrl, '/api/cliente/1851003564001/');
+    final url = Uri.http(_baseUrl, '/api/cliente/1/');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(cliente.toJson());
 
@@ -67,7 +66,7 @@ class ClientService extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    final url = Uri.http(_baseUrl, '/api/cliente/1851003564001/');
+    final url = Uri.http(_baseUrl, '/api/cliente/1/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);

@@ -6,8 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class SearchClientDelegate extends SearchDelegate<Cliente> {
   final List<Cliente> clientes;
 
-  
-
   SearchClientDelegate(this.clientes);
   List<Cliente> _filter = [];
 
@@ -15,7 +13,6 @@ class SearchClientDelegate extends SearchDelegate<Cliente> {
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    // TODO: implement buildActions
     return [
       IconButton(
         onPressed: () {
@@ -28,7 +25,6 @@ class SearchClientDelegate extends SearchDelegate<Cliente> {
 
   @override
   Widget? buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
     return IconButton(
       onPressed: () {
         close(
@@ -48,13 +44,11 @@ class SearchClientDelegate extends SearchDelegate<Cliente> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     return Container();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
     _filter = clientes
         .where((element) =>
             element.nombre.toLowerCase().contains(query.toLowerCase()) ||
@@ -73,14 +67,11 @@ class SearchClientDelegate extends SearchDelegate<Cliente> {
           onTap: () {
             // clientService.selectedClient = _filter[index].copy();
             var cliente = _filter[index].copy();
-            print(cliente.telefono);
             Navigator.pushNamed(
               context,
               '/client_form',
               arguments: cliente,
             );
-            // clientService.printSelectedClient();
-            // print(clientService.selectedClient.idCliente);
           },
           leading: const Icon(FontAwesomeIcons.user),
           title: Text(
