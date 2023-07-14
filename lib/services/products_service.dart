@@ -37,24 +37,40 @@ class ProductsService extends ChangeNotifier {
 
   Future createProduct(Producto product) async {
     final url = Uri.http(_baseUrl, '/api/producto/1/');
-    final response = await http.post(url, body: {
-      'id_iva_per': product.idIvaPer.toString(),
-      'producto': product.producto,
-      'precio': product.precio.toString(),
-    });
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode(product.toJson());
+    final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
-      // final jsonData = jsonDecode(response.body);
-      // final productData = jsonData['producto'];
-      // final newProduct = Producto(
-      //     idIvaPer: productData['id_iva_per'],
-      //     producto: productData['producto'],
-      //     precio: double.parse(productData['precio']),
-      //     idProducto: productData['id_producto']);
-      // products.add(newProduct);
-      print(response.body);
       notifyListeners();
     } else {
-      throw Exception('Error al crear el producto');
+      throw Exception('Error en la solicitud POST');
     }
+  }
+
+  Future editProduct(Producto product) async {
+    final url = Uri.http(_baseUrl, '/api/producto/1/${product.idProducto}/');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode(product.toJson());
+    final response = await http.put(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      notifyListeners();
+    } else {
+      throw Exception('Error en la solicitud PUT');
+    }
+  }
+
+  Future deleteProduct({required int idProducto}) async {
+    final url = Uri.http(_baseUrl, '/api/producto/1/$idProducto/');
+    final response = await http.delete(url);
+    if (response.statusCode == 200) {
+      products.removeAt(indexOfProduct(idProducto));
+      notifyListeners();
+    } else {
+      throw Exception('Error en la solicitud DELETE');
+    }
+  }
+
+  int indexOfProduct(int? idProducto) {
+    return products.indexWhere((product) => product.idProducto == idProducto);
   }
 }

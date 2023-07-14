@@ -20,6 +20,15 @@ class Producto {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id_iva_per': idIvaPer,
+      'id_producto': idProducto,
+      'producto': producto,
+      'precio': precio.toString(),
+    };
+  }
+
   Producto copy() {
     return Producto(
       idIvaPer: idIvaPer,

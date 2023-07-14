@@ -18,6 +18,7 @@ class ProductosFormPage extends StatelessWidget {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final int option = arguments?['option'] as int? ?? 0;
     final Producto? producto = arguments?['producto'] as Producto?;
+    final productsService = Provider.of<ProductsService>(context);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -63,8 +64,11 @@ class ProductosFormPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Container(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: MaterialButton(
                   onPressed: () {
+                    productsService.deleteProduct(
+                        idProducto: producto!.idProducto);
                     Navigator.pop(context);
                   },
                   color: AppColors.dangerColor,
@@ -74,7 +78,7 @@ class ProductosFormPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Text(
-                    'Cancelar',
+                    'Eliminar producto',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -149,11 +153,11 @@ class _ProductForm extends StatelessWidget {
                 labelText: 'Categoría de IVA'),
             items: const [
               DropdownMenuItem(
-                value: 'cero',
+                value: 0,
                 child: Text('IVA 0%'),
               ),
               DropdownMenuItem(
-                value: '2',
+                value: 1,
                 child: Text('IVA 12%'),
               ),
             ],
@@ -188,6 +192,28 @@ class _ProductForm extends StatelessWidget {
                       );
                       productService.products.add(nuevo);
                       await productService.createProduct(nuevo);
+                    } else {
+                      var idIvaPer = productForm.categoria == 'cero' ? 0 : 1;
+                      var productoName = productForm.producto == ''
+                          ? producto!.producto
+                          : productForm.producto;
+                      var precio = productForm.precio == ''
+                          ? producto!.precio
+                          : double.parse(productForm.precio);
+                      Producto editar = Producto(
+                        idIvaPer: idIvaPer,
+                        producto: productoName,
+                        precio: precio,
+                        idProducto: producto!.idProducto,
+                      );
+                      await productService.editProduct(editar);
+                      productService.products.map((e) {
+                        if (e.idProducto == editar.idProducto) {
+                          e.idIvaPer = editar.idIvaPer;
+                          e.producto = editar.producto;
+                          e.precio = editar.precio;
+                        }
+                      }).toList();
                     }
                     Navigator.pop(context);
                   },

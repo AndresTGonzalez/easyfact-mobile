@@ -26,9 +26,7 @@ class ClientService extends ChangeNotifier {
     final response = await http.put(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
       notifyListeners();
-      print('Se logro');
     } else {
       throw Exception('Error en la solicitud PUT');
     }
@@ -54,9 +52,7 @@ class ClientService extends ChangeNotifier {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
       notifyListeners();
-      print('Se logro');
     } else {
       throw Exception('Error en la solicitud POST');
     }

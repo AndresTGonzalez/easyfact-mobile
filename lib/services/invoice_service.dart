@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/cliente.dart';
 
 class InvoiceService extends ChangeNotifier {
-  static const String _baseUrl = '';
+  // static const String _baseUrl = '';
   Cliente cliente = Cliente(
       numeroIdentificacion: '9999999999999',
       nombre: 'Consumidor final',

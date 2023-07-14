@@ -29,7 +29,6 @@ class ProductsPage extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: IconButton(
             onPressed: () {
-              // Navigator.pushNamed(context, '/client_search');
               showSearch(
                 context: context,
                 delegate: ProductsSearchDelegate(
@@ -37,21 +36,10 @@ class ProductsPage extends StatelessWidget {
                         .products),
               );
             },
-            icon: IconButton(
-              onPressed: () {
-                // Navigator.pushNamed(context, '/client_search');
-                showSearch(
-                  context: context,
-                  delegate: ProductsSearchDelegate(
-                      Provider.of<ProductsService>(context, listen: false)
-                          .products),
-                );
-              },
-              icon: const Icon(
-                FontAwesomeIcons.magnifyingGlass,
-                size: 20,
-                color: AppColors.primaryColor,
-              ),
+            icon: const Icon(
+              FontAwesomeIcons.magnifyingGlass,
+              size: 20,
+              color: AppColors.primaryColor,
             ),
           ),
         ),
@@ -94,15 +82,27 @@ class ProductsPage extends StatelessWidget {
                 const SizedBox(height: 20.0),
                 _productsTitle(context),
                 const SizedBox(height: 20.0),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: productsService.products.length,
                     itemBuilder: (context, index) {
-                      return _ProductCard(
-                          producto: productsService.products[index]);
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/product_form',
+                            arguments: {
+                              'option': 1,
+                              'producto': productsService.products[index],
+                            },
+                          );
+                        },
+                        child: _ProductCard(
+                            producto: productsService.products[index]),
+                      );
                     },
                   ),
                 ),
