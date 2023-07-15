@@ -14,6 +14,8 @@ class InvoiceDetailService extends ChangeNotifier {
     precio: 0,
   );
   int cantidad = 1;
+  double total = 0;
+  double iva = 0;
   final List<VisualDetalleFactura> detalles = [];
 
   void setSelectedProduct(Producto producto) {
@@ -39,8 +41,14 @@ class InvoiceDetailService extends ChangeNotifier {
         precio: selectedProduct.precio,
       ));
       cantidad = 1;
-      print(body);
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
       print(response.body);
+      double subtotalProducto =
+          double.parse(jsonData['Detalle']['subtotal_producto']);
+      double ivaProducto = double.parse(jsonData['Detalle']['total_iva']);
+      total += subtotalProducto;
+      iva += ivaProducto;
+      print(subtotalProducto);
       notifyListeners();
     } else {
       // throw Exception('Error en la solicitud POST');

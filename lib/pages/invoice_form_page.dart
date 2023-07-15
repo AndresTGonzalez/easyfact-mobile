@@ -33,10 +33,132 @@ class InvoiceFormPage extends StatelessWidget {
                 _InvoiceDetail(
                   factura: factura,
                 ),
+                const SizedBox(height: 20.0),
+                _SumaryCard(),
+                const SizedBox(height: 20.0),
+                _Buttons(
+                  factura: factura,
+                ),
+                const SizedBox(height: 40.0),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Buttons extends StatelessWidget {
+  final CreateFactura factura;
+  const _Buttons({
+    super.key,
+    required this.factura,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final invoiceService = Provider.of<InvoiceService>(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      width: double.infinity,
+      child: Column(
+        children: [
+          MaterialButton(
+            onPressed: () {
+              invoiceService.cerrarFactura(factura.idFactura!);
+              
+            },
+            color: AppColors.primaryColor,
+            textColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            minWidth: double.infinity,
+            height: 50,
+            child: const Text('Guardar'),
+          ),
+          const SizedBox(height: 10.0),
+          MaterialButton(
+            onPressed: () {},
+            color: AppColors.dangerColor,
+            textColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            minWidth: double.infinity,
+            height: 50,
+            child: const Text('Cancelar'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SumaryCard extends StatelessWidget {
+  const _SumaryCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final invoiceDetailService = Provider.of<InvoiceDetailService>(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      decoration: CardDecorations.cardDecoration(),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Text(
+                'Subtotal',
+                style: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontFamily: 'OpenSans',
+                    fontSize: 16),
+              ),
+              const Spacer(),
+              Text(
+                '\$${invoiceDetailService.total}',
+                style: CardDecorations.detailProductPriceTextStyle(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10.0),
+          Row(
+            children: [
+              const Text(
+                'IVA',
+                style: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontFamily: 'OpenSans',
+                    fontSize: 16),
+              ),
+              const Spacer(),
+              Text(
+                '\$${invoiceDetailService.iva}',
+                style: CardDecorations.detailProductPriceTextStyle(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10.0),
+          Row(
+            children: [
+              const Text(
+                'Total',
+                style: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontFamily: 'OpenSans',
+                    fontSize: 16),
+              ),
+              const Spacer(),
+              Text(
+                '\$${invoiceDetailService.total + invoiceDetailService.iva}',
+                style: CardDecorations.detailProductPriceTextStyle(),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

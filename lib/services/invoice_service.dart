@@ -29,6 +29,23 @@ class InvoiceService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future cerrarFactura(int idFactura) async {
+    final url = Uri.http(_baseUrl, '/api/cerrarfactura/');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'id_factura_per': idFactura,
+      'id_cliente_per': cliente.numeroIdentificacion,
+      "id_forma_pago_per": 1
+    });
+
+    final response = await http.post(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      throw Exception('Error en la solicitud POST');
+    }
+  }
+
   Future getCliente(String cedula) async {
     final url = Uri.http(_baseUrl, '/api/cliente/1/$cedula/');
     final response = await http.get(url);
