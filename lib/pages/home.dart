@@ -30,10 +30,10 @@ class _Pages extends StatelessWidget {
       controller: navigation.pageController,
       physics: const NeverScrollableScrollPhysics(),
       children: const [
-        HomePage(),
+        InvoicesPage(),
         ClientsPage(),
         ProductsPage(),
-        InvoicesPage(),
+        // InvoicesPage(),
         ConfigurationPage()
       ],
     );
@@ -58,8 +58,8 @@ class _Navigation extends StatelessWidget {
       items: const [
         BottomNavigationBarItem(
           // ignore: deprecated_member_use
-          icon: FaIcon(FontAwesomeIcons.home),
-          label: 'Inicio',
+          icon: FaIcon(FontAwesomeIcons.fileInvoiceDollar),
+          label: 'Facturas',
         ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.users),
@@ -69,10 +69,10 @@ class _Navigation extends StatelessWidget {
           icon: FaIcon(FontAwesomeIcons.bagShopping),
           label: 'Productos',
         ),
-        BottomNavigationBarItem(
-          icon: FaIcon(FontAwesomeIcons.fileInvoiceDollar),
-          label: 'Documentos',
-        ),
+        // BottomNavigationBarItem(
+        //   icon: FaIcon(FontAwesomeIcons.fileInvoiceDollar),
+        //   label: 'Documentos',
+        // ),
         BottomNavigationBarItem(
           icon: FaIcon(FontAwesomeIcons.gear),
           label: 'Configuración',

@@ -1,13 +1,17 @@
 import 'package:easyfact_mobile/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../global/user_info.dart';
+import '../services/home_service.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final homeService = Provider.of<HomeService>(context);
+    homeService.loadCardsInfo();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -76,8 +80,9 @@ class HomePage extends StatelessWidget {
                       // padding: const EdgeInsets.symmetric(horizontal: 20),
                       width: double.infinity,
                       height: 30,
-                      child: const Text(
-                        'Tu producto más vendido',
+                      child: Text(
+                        // 'Tu producto más vendido',
+                        homeService.probar.toString(),
                         style: TextStyle(
                           color: AppColors.whiteTextColor,
                           fontSize: 14,

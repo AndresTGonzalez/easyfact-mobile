@@ -1,5 +1,6 @@
 import 'package:easyfact_mobile/providers/navigation_provider.dart';
 import 'package:easyfact_mobile/services/client_service.dart';
+import 'package:easyfact_mobile/services/home_service.dart';
 import 'package:easyfact_mobile/services/invoice_detail_service.dart';
 import 'package:easyfact_mobile/services/invoice_service.dart';
 import 'package:easyfact_mobile/services/products_service.dart';
@@ -20,6 +21,7 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => InvoiceService()),
         ChangeNotifierProvider(create: (_) => ProductsService()),
         ChangeNotifierProvider(create: (_) => InvoiceDetailService()),
+        ChangeNotifierProvider(create: (_) => HomeService()),
       ],
       child: const MyApp(),
     );
