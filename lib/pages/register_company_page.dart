@@ -1,10 +1,29 @@
+import 'dart:io';
+
 import 'package:easyfact_mobile/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../ui/ui.dart';
 
-class RegisterCompanyPage extends StatelessWidget {
+class RegisterCompanyPage extends StatefulWidget {
   const RegisterCompanyPage({super.key});
+
+  @override
+  State<RegisterCompanyPage> createState() => _RegisterCompanyPageState();
+}
+
+class _RegisterCompanyPageState extends State<RegisterCompanyPage> {
+  File? _image;
+
+  Future getImage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (image == null) return;
+    final imageTemporary = File(image.path);
+    setState(() {
+      _image = imageTemporary;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,10 +211,15 @@ class RegisterCompanyPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   // color: Colors.black,
                   borderRadius: BorderRadius.circular(300),
-                  image: const DecorationImage(
-                    image: AssetImage('assets/images/default.png'),
-                    fit: BoxFit.cover,
-                  ),
+                  image: _image != null
+                      ? DecorationImage(
+                          image: FileImage(_image!),
+                          fit: BoxFit.cover,
+                        )
+                      : const DecorationImage(
+                          image: AssetImage('assets/images/default.png'),
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -216,7 +240,9 @@ class RegisterCompanyPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    getImage();
+                  },
                   color: AppColors.successColor,
                   minWidth: double.infinity,
                   height: 50,

@@ -135,7 +135,7 @@ class _LoginForm extends StatelessWidget {
           const SizedBox(height: 20),
           MaterialButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/register');
+              Navigator.pushNamed(context, '/register-company');
             },
             minWidth: double.infinity,
             color: AppColors.successColor,
