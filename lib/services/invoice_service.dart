@@ -5,6 +5,7 @@ import 'package:easyfact_mobile/models/factura.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../global/user_info.dart';
 import '../models/cliente.dart';
 
 class InvoiceService extends ChangeNotifier {
@@ -47,7 +48,8 @@ class InvoiceService extends ChangeNotifier {
   }
 
   Future getCliente(String cedula) async {
-    final url = Uri.http(_baseUrl, '/api/cliente/1/$cedula/');
+    final url =
+        Uri.http(_baseUrl, '/api/cliente/${UserInfo.idEmpresa}/$cedula/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
@@ -69,7 +71,7 @@ class InvoiceService extends ChangeNotifier {
     final url = Uri.http(_baseUrl, '/api/abrirfactura/');
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> jsonData = {
-      'id_usuario_per': 1,
+      'id_usuario_per': UserInfo.idUsuario,
     };
 
     final body = jsonEncode(jsonData);
@@ -102,7 +104,7 @@ class InvoiceService extends ChangeNotifier {
 
   Future loadFacturas() async {
     notifyListeners();
-    final url = Uri.http(_baseUrl, '/api/verFacturas/1/');
+    final url = Uri.http(_baseUrl, '/api/verFacturas/${UserInfo.idEmpresa}/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);

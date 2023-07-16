@@ -11,6 +11,10 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Recibir un entero como argumento si es null, se le asigna 0
+    final int idEmpresa =
+        ModalRoute.of(context)!.settings.arguments as int? ?? 0;
+    // final int idEmpresa = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -42,44 +46,12 @@ class RegisterPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ChangeNotifierProvider(
                   create: (_) => RegisterFormProvider(),
-                  child: _RegisterForm(),
+                  child: _RegisterForm(
+                    idEmpresa: idEmpresa,
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      '¿Ya tienes una cuenta?',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontFamily: 'OpenSans',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Inicia sesión',
-                        style: TextStyle(
-                          color: AppColors.primaryColor,
-                          fontSize: 16,
-                          fontFamily: 'OpenSans',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 50),
             ],
           ),
         ),
@@ -89,7 +61,11 @@ class RegisterPage extends StatelessWidget {
 }
 
 class _RegisterForm extends StatelessWidget {
-  const _RegisterForm({super.key});
+  final int idEmpresa;
+  const _RegisterForm({
+    super.key,
+    required this.idEmpresa,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +80,8 @@ class _RegisterForm extends StatelessWidget {
               hintText: 'usuario@app.com',
               labelText: 'Correo electrónico',
             ),
+            autocorrect: false,
+            onChanged: (value) => registerForm.email = value,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
               String pattern =
@@ -122,6 +100,7 @@ class _RegisterForm extends StatelessWidget {
             ),
             keyboardType: TextInputType.visiblePassword,
             autocorrect: false,
+            onChanged: (value) => registerForm.password = value,
             obscureText: true,
             validator: (value) {
               return (value != null && value.length >= 8)
@@ -152,6 +131,7 @@ class _RegisterForm extends StatelessWidget {
             ),
             keyboardType: TextInputType.name,
             autocorrect: false,
+            onChanged: (value) => registerForm.name = value,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Por favor ingrese su nombre';
@@ -166,6 +146,7 @@ class _RegisterForm extends StatelessWidget {
               labelText: 'Apellido',
             ),
             keyboardType: TextInputType.name,
+            onChanged: (value) => registerForm.apellido = value,
             autocorrect: false,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -186,7 +167,10 @@ class _RegisterForm extends StatelessWidget {
                     registerForm.isLoading = true;
                     await Future.delayed(const Duration(seconds: 2));
                     registerForm.isLoading = false;
-                    Navigator.pushReplacementNamed(context, '/');
+                    // print(idEmpresa);
+                    registerForm.register(21);
+                    // registerForm.testFields();
+                    // Navigator.pushReplacementNamed(context, '/');
                   },
             minWidth: double.infinity,
             color: AppColors.primaryColor,

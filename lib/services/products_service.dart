@@ -4,6 +4,8 @@ import 'package:easyfact_mobile/models/producto.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../global/user_info.dart';
+
 class ProductsService extends ChangeNotifier {
   static const String _baseUrl = '34.75.222.189:8000';
   final List<Producto> products = [];
@@ -16,7 +18,7 @@ class ProductsService extends ChangeNotifier {
   Future loadProducts() async {
     isLoading = true;
     notifyListeners();
-    final url = Uri.http(_baseUrl, '/api/producto/1/');
+    final url = Uri.http(_baseUrl, '/api/producto/${UserInfo.idEmpresa}/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
@@ -36,7 +38,7 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future createProduct(Producto product) async {
-    final url = Uri.http(_baseUrl, '/api/producto/1/');
+    final url = Uri.http(_baseUrl, '/api/producto/${UserInfo.idEmpresa}/');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(product.toJson());
     final response = await http.post(url, headers: headers, body: body);
@@ -48,7 +50,8 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future editProduct(Producto product) async {
-    final url = Uri.http(_baseUrl, '/api/producto/1/${product.idProducto}/');
+    final url = Uri.http(
+        _baseUrl, '/api/producto/${UserInfo.idEmpresa}/${product.idProducto}/');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(product.toJson());
     final response = await http.put(url, headers: headers, body: body);
@@ -60,7 +63,8 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future deleteProduct({required int idProducto}) async {
-    final url = Uri.http(_baseUrl, '/api/producto/1/$idProducto/');
+    final url =
+        Uri.http(_baseUrl, '/api/producto/${UserInfo.idEmpresa}/$idProducto/');
     final response = await http.delete(url);
     if (response.statusCode == 200) {
       products.removeAt(indexOfProduct(idProducto));

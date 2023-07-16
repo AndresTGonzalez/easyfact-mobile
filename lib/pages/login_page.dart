@@ -51,13 +51,10 @@ class LoginScreen extends StatelessWidget {
 class _LoginForm extends StatelessWidget {
   const _LoginForm({super.key});
 
-  //TODO: Add provider
-
   @override
   Widget build(BuildContext context) {
     final loginForm = Provider.of<LoginFormProvider>(context);
     return Form(
-      //TODO: Add key
       key: loginForm.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
