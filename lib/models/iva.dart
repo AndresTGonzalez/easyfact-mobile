@@ -1,7 +1,7 @@
 class Iva {
   int idIva;
   String ivaNombre;
-  String iva;
+  double iva;
 
   Iva({
     required this.idIva,

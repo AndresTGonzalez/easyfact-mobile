@@ -1,5 +1,6 @@
 import 'package:easyfact_mobile/constants/app_colors.dart';
 import 'package:easyfact_mobile/models/iva.dart';
+import 'package:easyfact_mobile/services/auth_service.dart';
 import 'package:easyfact_mobile/services/iva_service.dart';
 import 'package:easyfact_mobile/ui/card_decorations.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,10 @@ class _IvaSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ivaService = Provider.of<IvaService>(context);
+    final auth = Provider.of<AuthService>(context);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 40),
         Row(
@@ -79,6 +83,36 @@ class _IvaSection extends StatelessWidget {
               iva: ivaService.categorias[index],
             );
           },
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Usuario',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
+          ),
+        ),
+        const SizedBox(height: 20),
+        MaterialButton(
+          minWidth: double.infinity,
+          color: AppColors.dangerColor,
+          height: 50,
+          padding: const EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Text(
+            'Cerrar sesión',
+            style: TextStyle(
+              color: AppColors.whiteTextColor,
+              fontFamily: 'OpenSans',
+            ),
+          ),
+          onPressed: () {
+            auth.logout();
+            Navigator.pushReplacementNamed(context, '/');
+          },
         )
       ],
     );
@@ -95,7 +129,9 @@ class _IvaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ivaService = Provider.of<IvaService>(context, listen: false);
     return Container(
+      margin: const EdgeInsets.only(bottom: 10),
       width: double.infinity,
       decoration: CardDecorations.cardDecoration(),
       padding: const EdgeInsets.all(20),
@@ -108,7 +144,18 @@ class _IvaCard extends StatelessWidget {
               fontWeight: FontWeight.w400,
               fontFamily: 'OpenSans',
             ),
-          )
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              ivaService.deleteIva(iva.idIva);
+            },
+            icon: const Icon(
+              Icons.delete,
+              color: AppColors.primaryColor,
+              size: 30,
+            ),
+          ),
         ],
       ),
     );
@@ -129,7 +176,7 @@ class _IvaAddForm extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       content: Container(
-        height: MediaQuery.of(context).size.height * 0.35,
+        height: MediaQuery.of(context).size.height * 0.4,
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +232,10 @@ class _IvaAddForm extends StatelessWidget {
                   fontFamily: 'OpenSans',
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                ivaService.addIva();
+                Navigator.pop(context);
+              },
             )
           ],
         ),
