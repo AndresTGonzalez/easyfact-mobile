@@ -167,9 +167,8 @@ class _RegisterForm extends StatelessWidget {
                     registerForm.isLoading = true;
                     await Future.delayed(const Duration(seconds: 2));
                     registerForm.isLoading = false;
-                    // print(idEmpresa);
-                    registerForm.register(21);
-                    // registerForm.testFields();
+                    print(idEmpresa);
+                    registerForm.register(idEmpresa);
                     // Navigator.pushReplacementNamed(context, '/');
                   },
             minWidth: double.infinity,
