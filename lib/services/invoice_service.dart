@@ -37,15 +37,18 @@ class InvoiceService extends ChangeNotifier {
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       'id_factura_per': idFactura,
-      'id_cliente_per': cliente.numeroIdentificacion,
+      'id_cliente_per': cliente.idCliente,
       "id_forma_pago_per": 1
     });
 
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
       print(response.body);
-    } else {
-      throw Exception('Error en la solicitud POST');
+      notifyListeners();
+    } else if (response.statusCode == 400) {
+      print('error');
+      print(body);
+      cerrarFactura(idFactura);
     }
   }
 
