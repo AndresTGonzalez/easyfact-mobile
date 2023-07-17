@@ -54,6 +54,7 @@ class _LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginForm = Provider.of<LoginFormProvider>(context);
+    final auth = Provider.of<AuthService>(context);
     return Form(
       key: loginForm.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -102,8 +103,10 @@ class _LoginForm extends StatelessWidget {
 
                     if (!loginForm.isValidForm()) return;
                     var loginOK =
-                        AuthService.login(loginForm.email, loginForm.password);
+                        // AuthService.login(loginForm.email, loginForm.password);
+                        auth.login(loginForm.email, loginForm.password);
                     if (await loginOK) {
+                      auth.userInfo();
                       loginForm.isLoading = true;
                       await Future.delayed(const Duration(seconds: 2));
                       loginForm.isLoading = false;

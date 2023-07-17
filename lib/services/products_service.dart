@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:easyfact_mobile/models/producto.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../global/user_info.dart';
 
 class ProductsService extends ChangeNotifier {
   static const String _baseUrl = '34.75.222.189:8000';
   final List<Producto> products = [];
+  final storage = FlutterSecureStorage();
   bool isLoading = true;
 
   ProductsService() {
@@ -16,9 +17,11 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future loadProducts() async {
+    String? empresa = await storage.read(key: 'idEmpresa');
+    int? idEmpresa = int.parse(empresa!);
     isLoading = true;
     notifyListeners();
-    final url = Uri.http(_baseUrl, '/api/producto/${UserInfo.idEmpresa}/');
+    final url = Uri.http(_baseUrl, '/api/producto/$idEmpresa/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
@@ -38,13 +41,13 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future createProduct(Producto product) async {
-    final url = Uri.http(_baseUrl, '/api/producto/${UserInfo.idEmpresa}/');
+    String? empresa = await storage.read(key: 'idEmpresa');
+    int? idEmpresa = int.parse(empresa!);
+    final url = Uri.http(_baseUrl, '/api/producto/$idEmpresa/');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(product.toJson());
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
-      print(body);
-      print(response.body);
       notifyListeners();
     } else {
       throw Exception('Error en la solicitud POST');
@@ -52,8 +55,10 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future editProduct(Producto product) async {
-    final url = Uri.http(
-        _baseUrl, '/api/producto/${UserInfo.idEmpresa}/${product.idProducto}/');
+    String? empresa = await storage.read(key: 'idEmpresa');
+    int? idEmpresa = int.parse(empresa!);
+    final url =
+        Uri.http(_baseUrl, '/api/producto/$idEmpresa/${product.idProducto}/');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(product.toJson());
     final response = await http.put(url, headers: headers, body: body);
@@ -65,8 +70,9 @@ class ProductsService extends ChangeNotifier {
   }
 
   Future deleteProduct({required int idProducto}) async {
-    final url =
-        Uri.http(_baseUrl, '/api/producto/${UserInfo.idEmpresa}/$idProducto/');
+    String? empresa = await storage.read(key: 'idEmpresa');
+    int? idEmpresa = int.parse(empresa!);
+    final url = Uri.http(_baseUrl, '/api/producto/$idEmpresa/$idProducto/');
     final response = await http.delete(url);
     if (response.statusCode == 200) {
       products.removeAt(indexOfProduct(idProducto));

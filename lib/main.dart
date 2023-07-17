@@ -1,4 +1,6 @@
+import 'package:easyfact_mobile/pages/check_auth_page.dart';
 import 'package:easyfact_mobile/providers/navigation_provider.dart';
+import 'package:easyfact_mobile/services/auth_service.dart';
 import 'package:easyfact_mobile/services/client_service.dart';
 import 'package:easyfact_mobile/services/home_service.dart';
 import 'package:easyfact_mobile/services/invoice_detail_service.dart';
@@ -22,6 +24,7 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductsService()),
         ChangeNotifierProvider(create: (_) => InvoiceDetailService()),
         ChangeNotifierProvider(create: (_) => HomeService()),
+        ChangeNotifierProvider(create: (_) => AuthService()),
       ],
       child: const MyApp(),
     );
@@ -36,7 +39,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'EasyFact',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/check',
       routes: {
         '/': (context) => const LoginScreen(),
         '/register': (context) => const RegisterPage(),
@@ -50,6 +53,7 @@ class MyApp extends StatelessWidget {
         '/invoices': (context) => const InvoicesPage(),
         '/clients': (context) => const ClientsPage(),
         '/products': (context) => const ProductsPage(),
+        '/check': (context) => const CheckAuthPage(),
       },
     );
   }

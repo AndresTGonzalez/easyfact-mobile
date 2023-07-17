@@ -4,12 +4,14 @@ import 'package:easyfact_mobile/models/create_factura.dart';
 import 'package:easyfact_mobile/models/factura.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../global/user_info.dart';
 import '../models/cliente.dart';
 
 class InvoiceService extends ChangeNotifier {
   static const String _baseUrl = '34.75.222.189:8000';
+  final storage = FlutterSecureStorage();
   Cliente cliente = Cliente(
       numeroIdentificacion: '9999999999999',
       nombre: 'Consumidor final',
@@ -70,8 +72,11 @@ class InvoiceService extends ChangeNotifier {
   Future<CreateFactura> createFactura() async {
     final url = Uri.http(_baseUrl, '/api/abrirfactura/');
     final headers = {'Content-Type': 'application/json'};
+    String? usuario = await storage.read(key: 'idUsuario');
+    int? idUsuario = int.parse(usuario!);
+    print('este es el usuario $idUsuario');
     Map<String, dynamic> jsonData = {
-      'id_usuario_per': UserInfo.idUsuario,
+      'id_usuario_per': idUsuario,
     };
 
     final body = jsonEncode(jsonData);
@@ -104,7 +109,9 @@ class InvoiceService extends ChangeNotifier {
 
   Future loadFacturas() async {
     notifyListeners();
-    final url = Uri.http(_baseUrl, '/api/verFacturas/${UserInfo.idEmpresa}/');
+    String? empresa = await storage.read(key: 'idEmpresa');
+    int? idEmpresa = int.parse(empresa!);
+    final url = Uri.http(_baseUrl, '/api/verFacturas/$idEmpresa/');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
