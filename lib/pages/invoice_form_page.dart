@@ -24,7 +24,9 @@ class InvoiceFormPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                const _Header(),
+                _Header(
+                  factura: factura,
+                ),
                 const SizedBox(height: 20.0),
                 _DateDetail(factura: factura),
                 const SizedBox(height: 20.0),
@@ -59,6 +61,7 @@ class _Buttons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final invoiceService = Provider.of<InvoiceService>(context);
+    final invoiceDetailService = Provider.of<InvoiceDetailService>(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       width: double.infinity,
@@ -67,7 +70,12 @@ class _Buttons extends StatelessWidget {
           MaterialButton(
             onPressed: () {
               invoiceService.cerrarFactura(factura.idFactura!);
-              
+              invoiceDetailService.resetSumary();
+              invoiceDetailService.cantidad = 1;
+              invoiceDetailService.selectedProduct =
+                  Producto(idIvaPer: 0, idProducto: 0, producto: '', precio: 0);
+              invoiceDetailService.detalles.clear();
+              Navigator.pop(context);
             },
             color: AppColors.primaryColor,
             textColor: Colors.white,
@@ -80,7 +88,15 @@ class _Buttons extends StatelessWidget {
           ),
           const SizedBox(height: 10.0),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              invoiceService.deleteFactura(factura.idFactura!);
+              invoiceDetailService.resetSumary();
+              invoiceDetailService.cantidad = 1;
+              invoiceDetailService.selectedProduct =
+                  Producto(idIvaPer: 0, idProducto: 0, producto: '', precio: 0);
+              invoiceDetailService.detalles.clear();
+              Navigator.pop(context);
+            },
             color: AppColors.dangerColor,
             textColor: Colors.white,
             shape: RoundedRectangleBorder(
@@ -271,7 +287,6 @@ class _AddDetailForm extends StatelessWidget {
               minWidth: 400,
               onPressed: () async {
                 await invoiceDetailService.addDetalle(factura.idFactura!);
-                invoiceDetailService.printLength();
                 invoiceDetailService.cantidad = 1;
                 invoiceDetailService.selectedProduct = Producto(
                     idIvaPer: 0, idProducto: 0, producto: '', precio: 0);
@@ -357,13 +372,18 @@ class _InvoiceDetail extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: Row(
                   children: [
+                    IconButton(
+                      onPressed: () {
+                        invoiceDetailService.deleteByProduct(
+                            invoiceDetailService.detalles[index].idDetalle!);
+                      },
+                      icon: const Icon(Icons.do_not_disturb_on),
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          // 'Producto',
                           invoiceDetailService.detalles[index].producto,
-                          // invoiceDetailService.detalles[index],
                           style: CardDecorations.detailProductTextStyle(),
                         ),
                         Text(
@@ -463,7 +483,7 @@ class _DateDetail extends StatelessWidget {
             children: [
               Text(
                 // '#123456789',
-                factura.idFactura.toString(),
+                factura.numeroFactura.toString(),
                 style: CardDecorations.titleCardTextStyle(),
               ),
               const SizedBox(height: 2),
@@ -487,17 +507,27 @@ class _DateDetail extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({super.key});
+  final CreateFactura factura;
+  const _Header({
+    super.key,
+    required this.factura,
+  });
 
   @override
   Widget build(BuildContext context) {
     final invoiceDetailService = Provider.of<InvoiceDetailService>(context);
+    final invoiceService = Provider.of<InvoiceService>(context);
     return Container(
       margin: const EdgeInsets.only(top: 40.0),
       child: Row(
         children: [
           IconButton(
             onPressed: () {
+              invoiceService.deleteFactura(factura.idFactura!);
+              invoiceDetailService.resetSumary();
+              invoiceDetailService.cantidad = 1;
+              invoiceDetailService.selectedProduct =
+                  Producto(idIvaPer: 0, idProducto: 0, producto: '', precio: 0);
               invoiceDetailService.detalles.clear();
               Navigator.pop(context);
             },

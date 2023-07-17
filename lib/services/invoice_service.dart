@@ -13,6 +13,7 @@ class InvoiceService extends ChangeNotifier {
   static const String _baseUrl = '34.75.222.189:8000';
   final storage = FlutterSecureStorage();
   Cliente cliente = Cliente(
+      idCliente: 2,
       numeroIdentificacion: '9999999999999',
       nombre: 'Consumidor final',
       apellido: 'apellido',
@@ -25,6 +26,17 @@ class InvoiceService extends ChangeNotifier {
 
   InvoiceService() {
     loadFacturas();
+  }
+
+  Future deleteFactura(int idFactura) async {
+    final url = Uri.http(_baseUrl, '/api/abrirfactura/$idFactura/');
+    final response = await http.delete(url);
+    if (response.statusCode == 200) {
+      facturas.removeWhere((element) => element.idFactura == idFactura);
+      notifyListeners();
+    } else {
+      throw Exception('Error en la solicitud DELETE');
+    }
   }
 
   void setCliente(Cliente cliente) {
@@ -43,9 +55,26 @@ class InvoiceService extends ChangeNotifier {
 
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      final facturaData = jsonData['Factura'] as List<dynamic>;
+      final factura = facturaData.map((facturaData) {
+        return Factura(
+            numeroFactura: facturaData['numero_factura'],
+            idDocumentoPer: facturaData['id_documento_per'],
+            idFormaPagoPer: facturaData['id_forma_pago_per'],
+            idUsuarioPer: facturaData['id_usuario_per'],
+            idClientePer: facturaData['id_cliente_per'],
+            idFactura: facturaData['id_factura'],
+            claveAcceso: facturaData['clave_acceso'],
+            fecha: DateTime.parse(facturaData['fecha']),
+            subtotal: double.parse(facturaData['subtotal']),
+            totalIva: double.parse(facturaData['total_iva']),
+            total: double.parse(facturaData['total']));
+      }).toList();
+      facturas.add(factura[0]);
       print(response.body);
       notifyListeners();
-    } else if (response.statusCode == 400) {
+    } else if (response.statusCode == 500) {
       print('error');
       print(body);
       cerrarFactura(idFactura);

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-
 class ProductsService extends ChangeNotifier {
   static const String _baseUrl = '34.75.222.189:8000';
   final List<Producto> products = [];
@@ -63,6 +62,8 @@ class ProductsService extends ChangeNotifier {
     final body = jsonEncode(product.toJson());
     final response = await http.put(url, headers: headers, body: body);
     if (response.statusCode == 200) {
+      print(body);
+      print(response.body);
       notifyListeners();
     } else {
       throw Exception('Error en la solicitud PUT');

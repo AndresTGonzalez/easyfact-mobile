@@ -112,7 +112,22 @@ class _LoginForm extends StatelessWidget {
                       loginForm.isLoading = false;
                       Navigator.pushNamed(context, '/home');
                     } else {
-                      // Mensaje en caso de que el login falle
+                      // Mostrar dialogo de error
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Error'),
+                              content: const Text(
+                                  'Usuario o contraseña incorrectos'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('Ok'),
+                                )
+                              ],
+                            );
+                          });
                     }
                   },
             minWidth: double.infinity,

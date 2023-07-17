@@ -113,7 +113,8 @@ class _IvaSection extends StatelessWidget {
             auth.logout();
             Navigator.pushReplacementNamed(context, '/');
           },
-        )
+        ),
+        const SizedBox(height: 20),
       ],
     );
   }

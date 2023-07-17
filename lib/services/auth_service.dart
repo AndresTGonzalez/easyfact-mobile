@@ -33,6 +33,7 @@ class AuthService extends ChangeNotifier {
             key: 'idEmpresa', value: UserInfo.idEmpresa.toString());
         return true;
       } else {
+        print(response.statusCode);
         return false;
       }
     } catch (e) {

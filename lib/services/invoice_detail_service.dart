@@ -23,6 +23,29 @@ class InvoiceDetailService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future deleteByProduct(int id) async {
+    int index = getIndexById(id);
+    final url = Uri.http(_baseUrl, '/api/agregarproducto/$id/');
+    final response = await http.delete(url);
+
+    if (response.statusCode == 200) {
+      double subtotalProducto =
+          detalles[index].precio * detalles[index].cantidad;
+      total -= subtotalProducto;
+      iva -= detalles[index].iva!;
+      detalles.removeAt(index);
+      notifyListeners();
+    } else {
+      // throw Exception('Error en la solicitud POST');
+      print('Error en la solicitud DELETE');
+      print(response.body);
+    }
+  }
+
+  int getIndexById(int id) {
+    return detalles.indexWhere((element) => element.idDetalle == id);
+  }
+
   Future addDetalle(int idFactura) async {
     final url = Uri.http(_baseUrl, '/api/agregarproducto/');
     final headers = {'Content-Type': 'application/json'};
@@ -35,20 +58,23 @@ class InvoiceDetailService extends ChangeNotifier {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      int idDetalle = jsonData['Detalle']['id_detalle_factura'];
+      double ivaProducto = double.parse(jsonData['Detalle']['total_iva']);
       detalles.add(VisualDetalleFactura(
+        idDetalle: idDetalle,
         producto: selectedProduct.producto,
         cantidad: cantidad,
         precio: selectedProduct.precio,
+        iva: ivaProducto,
       ));
       cantidad = 1;
-      Map<String, dynamic> jsonData = jsonDecode(response.body);
-      print(response.body);
+
       double subtotalProducto =
           double.parse(jsonData['Detalle']['subtotal_producto']);
-      double ivaProducto = double.parse(jsonData['Detalle']['total_iva']);
+
       total += subtotalProducto;
       iva += ivaProducto;
-      print(subtotalProducto);
       notifyListeners();
     } else {
       // throw Exception('Error en la solicitud POST');
@@ -57,7 +83,10 @@ class InvoiceDetailService extends ChangeNotifier {
     }
   }
 
-  void printLength() {
-    print(detalles.length);
+  void resetSumary() {
+    total = 0;
+    iva = 0;
+    detalles.clear();
+    notifyListeners();
   }
 }
