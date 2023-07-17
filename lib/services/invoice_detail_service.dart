@@ -5,8 +5,6 @@ import 'package:easyfact_mobile/models/visual_detalle_factura.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:easyfact_mobile/global/user_info.dart';
-
 class InvoiceDetailService extends ChangeNotifier {
   static const String _baseUrl = '34.75.222.189:8000';
   Producto selectedProduct = Producto(

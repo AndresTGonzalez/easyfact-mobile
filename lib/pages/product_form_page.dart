@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:easyfact_mobile/models/producto.dart';
+import 'package:easyfact_mobile/services/iva_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,39 +55,54 @@ class ProductosFormPage extends StatelessWidget {
               const SizedBox(height: 40),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ChangeNotifierProvider(
-                  create: (_) => ProductFormProvider(),
+                child: MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(
+                        create: (context) => ProductFormProvider()),
+                    ChangeNotifierProvider(
+                      create: (context) => IvaService(),
+                    ),
+                  ],
                   child: _ProductForm(
                     producto: producto,
                     option: option,
                   ),
                 ),
+                // child: ChangeNotifierProvider(
+                //   create: (_) => ProductFormProvider(),
+                //   child: _ProductForm(
+                //     producto: producto,
+                //     option: option,
+                //   ),
+                // ),
               ),
               const SizedBox(height: 30),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: MaterialButton(
-                  onPressed: () {
-                    productsService.deleteProduct(
-                        idProducto: producto!.idProducto);
-                    Navigator.pop(context);
-                  },
-                  color: AppColors.dangerColor,
-                  minWidth: double.infinity,
-                  height: 50,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Text(
-                    'Eliminar producto',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: 'OpenSans',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                child: option == 0
+                    ? null
+                    : MaterialButton(
+                        onPressed: () {
+                          productsService.deleteProduct(
+                              idProducto: producto!.idProducto);
+                          Navigator.pop(context);
+                        },
+                        color: AppColors.dangerColor,
+                        minWidth: double.infinity,
+                        height: 50,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(
+                          'Eliminar producto',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'OpenSans',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
               ),
               const SizedBox(height: 50),
             ],
@@ -110,6 +126,7 @@ class _ProductForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final productForm = Provider.of<ProductFormProvider>(context);
     final productService = Provider.of<ProductsService>(context);
+    final ivaService = Provider.of<IvaService>(context);
     return Form(
       key: productForm.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -151,24 +168,16 @@ class _ProductForm extends StatelessWidget {
             decoration: FormFieldsStyle().textFormField(
                 hintText: 'Seleccione una opción',
                 labelText: 'Categoría de IVA'),
-            items: const [
-              DropdownMenuItem(
-                value: 0,
-                child: Text('IVA 0%'),
-              ),
-              DropdownMenuItem(
-                value: 1,
-                child: Text('IVA 12%'),
-              ),
-            ],
+            items: ivaService.categorias
+                .map(
+                  (item) => DropdownMenuItem<int>(
+                    value: item.idIva,
+                    child: Text('${item.iva}%'),
+                  ),
+                )
+                .toList(),
             onChanged: (value) {
-              productForm.categoria = value.toString();
-            },
-            validator: (value) {
-              if (value == null) {
-                return 'Por favor seleccione una opción';
-              }
-              return null;
+              productForm.categoria = value!;
             },
           ),
           const SizedBox(height: 50),
@@ -185,7 +194,8 @@ class _ProductForm extends StatelessWidget {
                     productForm.isLoading = false;
                     if (option == 0) {
                       Producto nuevo = Producto(
-                        idIvaPer: productForm.categoria == 'cero' ? 0 : 1,
+                        // idIvaPer: productForm.categoria == 'cero' ? 0 : 1,
+                        idIvaPer: productForm.categoria,
                         producto: productForm.producto,
                         precio: double.parse(productForm.precio),
                         idProducto: 0,
@@ -193,7 +203,7 @@ class _ProductForm extends StatelessWidget {
                       productService.products.add(nuevo);
                       await productService.createProduct(nuevo);
                     } else {
-                      var idIvaPer = productForm.categoria == 'cero' ? 0 : 1;
+                      var idIvaPer = productForm.categoria;
                       var productoName = productForm.producto == ''
                           ? producto!.producto
                           : productForm.producto;

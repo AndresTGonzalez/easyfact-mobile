@@ -43,6 +43,8 @@ class ProductsService extends ChangeNotifier {
     final body = jsonEncode(product.toJson());
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
+      print(body);
+      print(response.body);
       notifyListeners();
     } else {
       throw Exception('Error en la solicitud POST');

@@ -5,7 +5,7 @@ class ProductFormProvider extends ChangeNotifier {
 
   String producto = '';
   String precio = '';
-  String categoria = '';
+  int categoria = 0;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
