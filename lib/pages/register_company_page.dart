@@ -78,7 +78,7 @@ class _RegisterCompanyPageState extends State<RegisterCompanyPage> {
   }
 
   Future getImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) return;
     final imageTemporary = File(image.path);
     setState(() {
