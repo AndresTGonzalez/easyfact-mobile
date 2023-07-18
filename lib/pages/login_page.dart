@@ -110,7 +110,11 @@ class _LoginForm extends StatelessWidget {
                       loginForm.isLoading = true;
                       await Future.delayed(const Duration(seconds: 2));
                       loginForm.isLoading = false;
-                      Navigator.pushNamed(context, '/home');
+                      // Navigator.pushNamed(context, '/home');
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/home', (route) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home', (Route<dynamic> route) => false);
                     } else {
                       // Mostrar dialogo de error
                       showDialog(
