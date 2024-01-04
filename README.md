@@ -1,16 +1,34 @@
-# easyfact_mobile
+# Nombre del Proyecto
 
-A new Flutter project.
+EasyFact - Aplicación de facturación electrónica
 
-## Getting Started
+## Descripción
 
-This project is a starting point for a Flutter application.
+Aplicación de facturación electrónica aplicable en Ecuador
 
-A few resources to get you started if this is your first Flutter project:
+## Instalación
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Prerrequisitos
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Asegúrate de tener instalado:
+
+- Flutter SDK: [Instrucciones de instalación](https://flutter.dev/docs/get-started/install)
+- Emulador de dispositivos o un dispositivo físico para probar la aplicación.
+
+### Pasos de Instalación
+
+1. Clona este repositorio: `git clone https://github.com/tu_usuario/nombre-del-proyecto.git`
+2. Navega a la carpeta del proyecto: `cd nombre-del-proyecto`
+3. Ejecuta `flutter pub get` para instalar las dependencias.
+4. Conecta tu dispositivo o inicia un emulador.
+5. Ejecuta la aplicación: `flutter run`
+
+## Contribución
+
+Si deseas contribuir a este proyecto, sigue estos pasos:
+
+1. Haz un fork del repositorio.
+2. Crea una rama con tu funcionalidad: `git checkout -b nueva-funcionalidad`
+3. Realiza tus cambios y haz commit: `git commit -m 'Añade nueva funcionalidad'`
+4. Sube los cambios a tu repositorio: `git push origin nueva-funcionalidad`
+5. Crea un Pull Request en el repositorio original.
